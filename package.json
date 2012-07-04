@@ -1,6 +1,6 @@
 {
   "name": "from",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Easy way to make a Readable Stream",
   "main": "index.js",
   "scripts": {
