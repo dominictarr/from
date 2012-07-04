@@ -106,7 +106,6 @@ exports['simple (not strictly pausable) setTimeout'] = function (test) {
   var i = setInterval(function () {
     if(!paused) t.pause()
     else t.resume()
-    console.log('paused', paused)
     paused = !paused
   }, 2)
 
