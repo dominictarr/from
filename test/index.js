@@ -25,6 +25,23 @@ function pause(stream) {
   })
 }
 
+exports['inc'] = function (test) {
+
+  var fs = from(function (i) {
+    this.emit('data', i)
+    if(i >= 99)
+      return this.emit('end')
+    return true
+  })
+
+  spec(fs).readable().validateOnExit() 
+
+  read(fs, function (err, arr) {
+    test.equal(arr.length, 100)
+    test.done()
+  })
+}
+
 exports['simple'] = function (test) {
 
   var l = 1000
@@ -36,7 +53,7 @@ exports['simple'] = function (test) {
 
   spec(t)
     .readable()
-    .strictPausable()
+    .pausable({strict: true})
     .validateOnExit()
 
   read(t, function (err, actual) {
@@ -58,7 +75,7 @@ exports['simple pausable'] = function (test) {
 
   spec(t)
     .readable()
-    .strictPausable()
+    .pausable({strict: true})
     .validateOnExit()
 
   pause(t)
@@ -98,7 +115,7 @@ exports['simple (not strictly pausable) setTimeout'] = function (test) {
 
   spec(t)
     .readable()
-    //.strictPausable()
+    .pausable({strict: false })
     .validateOnExit()
 
   //pause(t)
@@ -120,3 +137,5 @@ exports['simple (not strictly pausable) setTimeout'] = function (test) {
   })
 
 }
+
+
