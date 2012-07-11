@@ -29,7 +29,7 @@ function from (source) {
   function next () {
     var n = 0, r = false
     if(ended) return
-    while(!ended && !s.paused && source.call(s, i, function () {
+    while(!ended && !s.paused && source.call(s, i++, function () {
       if(!n++ && !s.ended && !s.paused)
           next()
     }))
