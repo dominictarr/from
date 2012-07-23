@@ -1,4 +1,6 @@
 
+'use strict';
+
 var Stream = require('stream')
 
 // from
@@ -18,35 +20,39 @@ function from (source) {
       return true
     })
 
-  var s = new Stream(), i = 0, ended = false, started = false
+  var s = new Stream(), i = 0
+  s.ended = false
+  s.started = false
   s.readable = true
   s.writable = false
   s.paused = false
+  s.ended = false
   s.pause = function () {
-    started = true
+    s.started = true
     s.paused = true
   }
   function next () {
     var n = 0, r = false
-    if(ended) return
-    while(!ended && !s.paused && source.call(s, i++, function () {
+    s.started = true
+    if(s.ended) return
+    while(!s.ended && !s.paused && source.call(s, i++, function () {
       if(!n++ && !s.ended && !s.paused)
           next()
     }))
       ;
   }
   s.resume = function () {
-    started = true
+    s.started = true
     s.paused = false
     next()
   }
   s.on('end', function () {
-    ended = true
+    s.ended = true
     s.readable = false
     process.nextTick(s.destroy)
   })
   s.destroy = function () {
-    ended = true
+    s.ended = true
     s.emit('close') 
   }
   /*
@@ -56,7 +62,7 @@ function from (source) {
     work.
   */
   process.nextTick(function () {
-    if(!started) s.resume()
+    if(!s.started) s.resume()
   })
   return s
 }
