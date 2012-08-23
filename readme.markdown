@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/dominictarr/from.png)](http://travis-ci.org/dominictarr/from)
 # from
 
 An easy way to create a `readable Stream`.
