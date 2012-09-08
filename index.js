@@ -1,7 +1,6 @@
-
 'use strict';
 
-var Stream = require('stream')
+var Stream = require('readable-stream')
 
 // from
 //
@@ -9,60 +8,51 @@ var Stream = require('stream')
 // source may be an array, or a function.
 // from handles pause behaviour for you.
 
-module.exports =
-function from (source) {
-  if(Array.isArray(source))
-    return from (function (i) {
-      if(source.length)
-        this.emit('data', source.shift())
-      else
-        this.emit('end')
-      return true
-    })
+module.exports = from
 
-  var s = new Stream(), i = 0
-  s.ended = false
-  s.started = false
-  s.readable = true
-  s.writable = false
-  s.paused = false
-  s.ended = false
-  s.pause = function () {
-    s.started = true
-    s.paused = true
-  }
-  function next () {
-    var n = 0, r = false
-    s.started = true
-    if(s.ended) return
-    while(!s.ended && !s.paused && source.call(s, i++, function () {
-      if(!n++ && !s.ended && !s.paused)
-          next()
-    }))
-      ;
-  }
-  s.resume = function () {
-    s.started = true
-    s.paused = false
-    next()
-  }
-  s.on('end', function () {
-    s.ended = true
-    s.readable = false
-    process.nextTick(s.destroy)
-  })
-  s.destroy = function () {
-    s.ended = true
-    s.emit('close') 
-  }
-  /*
-    by default, the stream will start emitting at nextTick
-    if you want, you can pause it, after pipeing.
-    you can also resume before next tick, and that will also
-    work.
-  */
-  process.nextTick(function () {
-    if(!s.started) s.resume()
-  })
-  return s
+function from(source) {
+    if (Array.isArray(source)) {
+        return from(readArray)
+    }
+
+    var stream = new Stream()
+        , ended = false
+        , buffer = []
+
+    stream.readable = true
+    stream.writable = false
+
+    stream.read = read
+    stream.end = end
+
+    stream.once("end", setReadable)
+
+    return stream
+
+    function readArray(bytes) {
+        if (source.length) {
+            return source.shift()
+        } else {
+            this.emit("end")
+        }
+    }
+
+    function read(bytes) {
+        if (ended) {
+            return null
+        }
+        var result = source.call(stream, bytes, buffer)
+
+        return result === undefined ? null : result
+    }
+
+    function end() {
+        ended = true
+        stream.emit("end")
+    }
+
+    function setReadable() {
+        ended = true
+        stream.readable = false
+    }
 }
