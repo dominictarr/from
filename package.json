@@ -22,5 +22,8 @@
     "assertions": "~2.3.0"
   },
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (dominictarr.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "readable-stream": "0.0.1"
+  }
 }
