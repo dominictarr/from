@@ -32,11 +32,10 @@ function from (source) {
     s.paused = true
   }
   function next () {
-    var n = 0, r = false
     s.started = true
     if(s.ended) return
     while(!s.ended && !s.paused && source.call(s, i++, function () {
-      if(!n++ && !s.ended && !s.paused)
+      if(!s.ended && !s.paused)
           next()
     }))
       ;
