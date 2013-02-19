@@ -12,7 +12,7 @@ until the user emits `'end'`
 if `pause()` is called, the `getChunk` won't be called again untill `resume()` is called.
 
 
-``` js
+```js
 var from = require('from')
 
 var stream = 
@@ -29,6 +29,10 @@ var stream =
     return true 
   })
 ```
+
+## from(array)
+
+from also takes an `Array` whose elements it emits one after another.
 
 ## License
 MIT / Apache2
