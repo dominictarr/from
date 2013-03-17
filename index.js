@@ -11,7 +11,8 @@ var Stream = require('stream')
 
 module.exports =
 function from (source) {
-  if(Array.isArray(source))
+  if(Array.isArray(source)) {
+    source = source.slice()
     return from (function (i) {
       if(source.length)
         this.emit('data', source.shift())
@@ -19,7 +20,7 @@ function from (source) {
         this.emit('end')
       return true
     })
-
+  }
   var s = new Stream(), i = 0
   s.ended = false
   s.started = false
