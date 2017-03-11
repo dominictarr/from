@@ -170,7 +170,8 @@ exports['simple (not strictly pausable) setTimeout'] = function (test) {
       if(_expected.length)
         self.emit('data', _expected.shift())
       else
-        self.emit('end') 
+        if(!self.ended)
+          self.emit('end')
       n()
     }, 3)
   })
