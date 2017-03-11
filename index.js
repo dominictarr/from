@@ -12,10 +12,10 @@ var Stream = require('stream')
 module.exports =
 function from (source) {
   if(Array.isArray(source)) {
-    source = source.slice()
+		var source_index = 0, source_len = source.length;
     return from (function (i) {
-      if(source.length)
-        this.emit('data', source.shift())
+      if(source_index < source_len)
+        this.emit('data', source[source_index++])
       else
         this.emit('end')
       return true
