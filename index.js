@@ -37,7 +37,7 @@ function from (source) {
     if(s.ended) return
     while(!s.ended && !s.paused && source.call(s, i++, function () {
       if(!s.ended && !s.paused)
-          next()
+          process.nextTick(next);
     }))
       ;
   }
